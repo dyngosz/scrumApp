@@ -9,9 +9,9 @@ var mongoose = require('mongoose');                     // mongoose for mongodb
 var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
 
 var mongo = require('mongodb');
-// var monk = require('monk');
-// var mongoUri = process.env.MONGOLAB_URI;
-// var db = monk(mongoUri);
+var monk = require('monk');
+var mongoUri = 'mongodb://wiktor:wiktor1993@ds037824.mongolab.com:37824/heroku_3v8gs0p6';
+var db = monk(mongoUri);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -38,6 +38,11 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 
 app.use('/', routes);
 app.use('/users', users);
+
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
