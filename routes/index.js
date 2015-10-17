@@ -2,6 +2,9 @@ var express = require('express');
 var router = express.Router();
 var CryptoJS= require('crypto-js');
 
+var log4js = require('log4js');
+var logger = log4js.getLogger();
+
 var Db = require('mongodb').Db,
     MongoClient = require('mongodb').MongoClient,
     Server = require('mongodb').Server,
@@ -12,6 +15,17 @@ var Db = require('mongodb').Db,
     Grid = require('mongodb').Grid,
     Code = require('mongodb').Code,
     assert = require('assert');
+
+ /* GET Userlist page. */
+ router.get('/userlist', function(req, res) {
+   var db = req.db;
+   var collection = db.get('usercollection');
+   collection.find({},{},function(e,docs){
+      res.render('userlist', {
+         "userlist" : docs
+      });
+   });
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
