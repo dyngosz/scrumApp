@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+            div.container
+                button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+                a.navbar-brand
+                  | SCRUM App
+                div.nav.navbar-nav.navbar-right
+                        li
+                          button.btn.btn-primary.navbar-btn(type="submit", form="project", value="addproject")
+                            span.glyphicon.glyphicon-ok(aria-hidden='true')
+                            |  Done
+                        li
+                          a(href="/profile")= "Back"
+          div.collapse.navbar-collapse
+    div(align='center')
+      .container(ng-app='ng-app')
+         div#form(align='center', class = 'panel')
+         div.col-md-12(align='center',)
+            label Project name:
+            br
+            input#projectname(type='text', ng-model='yourProjectName', name='projectname')

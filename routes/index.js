@@ -97,6 +97,7 @@ function adduserFunction(req, res) {
 
 /* Logout Function */
 router.get('/logout', function(req, res){
+   req.session.reset();
    res.redirect('/');
 });
 
@@ -114,9 +115,18 @@ function profileFunction(req, res){
       var userName = req.body.username;
       var userPassword = req.body.userpassword;
       userPassword = String(CryptoJS.SHA3(userPassword));
+      var cookieSet = false;
+
    }
    else {
-      res.render('index', { title: 'SCRUM APP' });
+      if( req.session.user ){
+        var userName = req.session.user.username;
+        var userPassword = req.session.user.userpassword;
+        var cookieSet = true;
+        }
+        else {
+           res.render('index', { title: 'SCRUM APP' });
+        }
    }
 
    // Set our collection
@@ -125,6 +135,8 @@ function profileFunction(req, res){
    collection.findOne({"username" : userName,"userstatus" : {$in : ["A","N"]}, "userpassword" : userPassword },function(err, user){
 
       if(user!=null){
+         if(cookieSet == false) req.session.user = user;
+
          res.render('profile', {
             title: 'Your Profile',
             "profile" : user,
@@ -137,5 +149,10 @@ function profileFunction(req, res){
       }
    });
 };
+
+/* GET Creator page. */
+router.get('/creator', function(req, res) {
+    res.render('creator', { title: 'Project Creator'});
+});
 
 module.exports = router;

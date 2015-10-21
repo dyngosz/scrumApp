@@ -22,6 +22,14 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+var session = require('client-sessions');
+
+app.use(session({
+  cookieName: 'session',  //nazwa caisteczka
+  secret: '348rvnrh238ry293nr3jvi303vr83h83v', //randomowy string służący do enkrypcji
+  duration: 60 * 60 * 1000, //czas ważności ciasteczka
+  activeDuration: 30 * 60 * 1000, //przedłuzenie czasu trwania ciasteczka
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
