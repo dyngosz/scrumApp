@@ -120,39 +120,83 @@ function profileFunction(req, res){
    }
    else {
       if( req.session.user ){
-        var userName = req.session.user.username;
-        var userPassword = req.session.user.userpassword;
-        var cookieSet = true;
-        }
-        else {
-           res.render('index', { title: 'SCRUM APP' });
-        }
+         var userName = req.session.user.username;
+         var userPassword = req.session.user.userpassword;
+         var cookieSet = true;
+      }
+      else {
+         //   res.render('index', { title: 'SCRUM APP' });
+      }
    }
 
    // Set our collection
    var collection = db.get('usercollection');
 
-   collection.findOne({"username" : userName,"userstatus" : {$in : ["A","N"]}, "userpassword" : userPassword },function(err, user){
+   collection.findOne({"username" : userName,"userstatus" : {
+      $in : ["A","N"]}, "userpassword" : userPassword },function(err, user){
 
       if(user!=null){
          if(cookieSet == false) req.session.user = user;
 
-         res.render('profile', {
-            title: 'Your Profile',
-            "profile" : user,
+         var collection2 = db.get('projectcollection');
+         collection2.find({ "projectowner" : userName},function(e,docs2) {
+            var list = [];
+            for (i=0; i<docs2.length; i++) {
+
+               list[list.length] = parseInt(docs2[i].projectid);
+            }
+
+               res.render('profile', {
+                  title: 'Your Profile',
+                  "profile" : user,
+                  "projects" : docs2,
+            });
          });
-      }
-      else
-      {
-         var ecom = "Incorrect data. If you don't have an account - Sign up";
-         res.render('index', { "error" : ecom });
-      }
+   }
+   else
+   {
+      var ecom = "Incorrect data. If you don't have an account - Sign up";
+      res.render('index', { "error" : ecom });
+   }
    });
 };
 
 /* GET Creator page. */
 router.get('/creator', function(req, res) {
-    res.render('creator', { title: 'Project Creator'});
+   res.render('creator', { title: 'Project Creator'});
+});
+
+/* POST to Add Project */
+router.post('/addproject', function(req, res) {
+
+   var username = req.session.user.username;
+   var projectname = req.body.projectname;
+
+   var db = req.db;
+   var collection = db.get('projectcollection');
+   collection.count({},function(err, count){
+      projectid = count+1;
+      // Submit to the DB
+      collection.insert({
+         "projectname" : projectname,
+         "projectowner" : username,
+         "projectid" : projectid
+      }, function (err, doc) {
+         if (err) {
+            // If it failed, return error
+            var ecom = "There was a problem during adding the information to the database.";
+            res.render('errorpage', { "error" : ecom, "page" : "/profile" });
+            return;
+         }
+         else {
+            // If it worked, set the header so the address bar doesn't still say /adduser
+            res.location("/profile");
+            // And forward to success page
+            res.redirect("/profile");
+         }
+      });
+   });
+
 });
 
 module.exports = router;

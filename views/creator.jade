@@ -17,7 +17,7 @@ block content
     div(align='center')
       .container(ng-app='ng-app')
          div#form(align='center', class = 'panel')
-         div.col-md-12(align='center',)
-            label Project name:
-            br
-            input#projectname(type='text', ng-model='yourProjectName', name='projectname')
+            form#project(method='post', action='/addproject')
+               div.col-md-12(align='center',)
+                  label Project name:
+                  input#projectname(type='text', ng-model='yourProjectName', name='projectname')

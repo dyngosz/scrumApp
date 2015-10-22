@@ -13,5 +13,10 @@ block content
                         a(href="/logout") Log out
         div.collapse.navbar-collapse
     div(align='center', class='jumbotron')
-        h2 Hello World
-         h3 Hi  #{profile.username}!
+         h2 Hi  #{profile.username}!
+         hr
+         div.row
+            div.col-md-12(align='center')
+                h3 Your projects:
+                each project in projects
+                     h5 #{project.projectname}
