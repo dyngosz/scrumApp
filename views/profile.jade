@@ -17,6 +17,14 @@ block content
          hr
          div.row
             div.col-md-12(align='center')
-                h3 Your projects:
-                each project in projects
-                     h5 #{project.projectname}
+            each project in projects
+               div(id='field'+project.projectid,class="row")
+                    table.table-condensed
+                        thead
+                           th
+                           th
+                        tbody    
+                           td.col-md-8
+                                h5 #{project.projectname}
+                           td.col-md-1 
+                                a.btn.btn-medium.btn-success(href='/project?id='+project.projectid) Edit

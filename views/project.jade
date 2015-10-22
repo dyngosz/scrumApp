@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+		div.container
+			button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+			a.navbar-brand(href="/profile")
+				| SCRUM App
+			div.nav.navbar-nav.navbar-right    
+				li
+					a(href="/profile")= "Back"		
+		div.collapse.navbar-collapse
+	div(align='center', ng-app='ng-app', class='jumbotron')
+		h2 Your project
+		//- h3 #{project.projectname}
