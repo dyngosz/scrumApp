@@ -19,12 +19,12 @@ block content
             div.col-md-12(align='center')
             each project in projects
                div(id='field'+project.projectid,class="row")
-                    table.table-condensed
+                    table.table-condensed.table-hover
                         thead
                            th
                            th
                         tbody    
-                           td.col-md-8
+                           td.col-md-10
                                 h5 #{project.projectname}
-                           td.col-md-1 
-                                a.btn.btn-medium.btn-success(href='/project?id='+project.projectid) Edit
+                           td.col-md-2
+                                a.btn.btn-medium.btn-success(href='/project?id='+project.projectid) Manage

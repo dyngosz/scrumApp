@@ -145,7 +145,6 @@ function profileFunction(req, res){
 
                   list[list.length] = parseInt(docs2[i].projectid);
                }
-
                res.render('profile', {
                   title: 'Your Profile',
                   "profile" : user,
@@ -228,20 +227,66 @@ function profileFunction(req, res){
       collection.find({"username" : userName,"userstatus" : {$in : ["A","N"]},
       "userpassword" : userPassword },function(err, find){
             var collection2 = db.get('projectcollection');
-
-            collection2.find({"projectid" : parseInt(projectid)}, function(err,doc){
-
+            collection2.find({"projectid" : parseInt(projectid)}, { "projectname" : 1 }, function(err,doc){
                if(doc[0]==undefined || doc[0]==""){
                   var ecom = "Wrong number of project";
                   res.render('errorpage', { "error" : ecom, "page" : "/profile" });
                   return;
                }
-               res.render('project', {
-                  "projectid" : projectid,
+
+               var collection3 = db.get('sprintInProjectCollection');
+               collection3.find({"projectid" : parseInt(projectid)}, { "sprintname" : 1 }, function(err,sprints){
+
+                  res.render('project', {
+                     "project" : doc,
+                     "sprints" : sprints
+                  });
+
                });
             });
       });
    });
 
+   /* GET SprintCreator page. */
+   router.get('/sprintcreator', function(req, res) {
+      res.render('sprintcreator', {
+         title: 'Sprint Creator',
+         'projectid': parseInt(req.query['id'])
+      });
+   });
+
+   /* POST to Add Sprint */
+   router.post('/addsprint', function(req, res) {
+
+      var username = req.session.user.username;
+      var projectid = parseInt(req.body.projectid);
+      var sprintname = req.body.sprintname;
+      var sprintstartdate = req.body.sprintstartdate;
+      var sprintenddate = req.body.sprintenddate;
+
+      var db = req.db;
+      var collection = db.get('sprintInProjectCollection');
+      // Submit to the DB
+      collection.insert({
+         "projectid": projectid,
+         "sprintname" : sprintname,
+         "sprintstartdate" : sprintstartdate,
+         "sprintenddate" : sprintenddate
+      }, function (err, doc) {
+         if (err) {
+            // If it failed, return error
+            var ecom = "There was a problem during adding the information to the database.";
+            res.render('errorpage', { "error" : ecom, "page" : "/profile" });
+            return;
+         }
+         else {
+            // If it worked, set the header so the address bar doesn't still say /adduser
+            res.location("/project?id="+projectid);
+            // And forward to success page
+            res.redirect("/project?id="+projectid);
+         }
+      });
+
+   });
 
    module.exports = router;

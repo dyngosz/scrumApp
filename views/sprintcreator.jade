@@ -1,0 +1,49 @@
+extends layout
+
+block content
+
+    div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
+            div.container
+                button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+                a.navbar-brand(href="/profile")
+                  | SCRUM App
+                div.nav.navbar-nav.navbar-right
+                        li
+                          button.btn.btn-primary.navbar-btn(type="submit", form="sprint", value="addsprint")
+                            span.glyphicon.glyphicon-ok(aria-hidden='true')
+                            |  Done
+                        li
+                           a(onClick='goBack()')="Back"
+          div.collapse.navbar-collapse
+    div(align='center')
+      .container(ng-app='ng-app')
+         div#form(align='center', class = 'panel')
+            form#sprint(method='post', action='/addsprint')
+               div.col-md-12(align='center',class='jumbotron')
+                  table.table-condensed.table-hover
+                   tbody    
+                     tr
+                        td
+                           label Sprint name:
+                        td   
+                           input#projectname(type='text', ng-model='yourSprintName', name='sprintname')
+                     tr
+                        td
+                           label Sprint start date:
+                        td      
+                           input#sprintstartdate(type='date', ng-model='yourSprintStartDate', name='sprintstartdate')
+                     tr
+                        td
+                           label Sprint end date:
+                        td   
+                           input#sprintenddate(type='date', ng-model='yourSprintEndDate', name='sprintenddate')
+                           input#projectid(type='hidden', name='projectid', value='#{projectid}')
+
+
+      script(type='text/javascript').
+         function goBack(){
+            window.history.back();
+         }
+         function convert(string){
+            return parseInt(string);
+         }
