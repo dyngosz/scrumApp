@@ -1,7 +1,6 @@
 extends layout
 
 block content
-
     div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
             div.container
                 button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -9,37 +8,43 @@ block content
                   | SCRUM App
                 div.nav.navbar-nav.navbar-right
                         li
-                          button.btn.btn-primary.navbar-btn(type="submit", form="sprint", value="addsprint")
+                          button.btn.btn-primary.navbar-btn(type="submit", form="task", value="addtask")
                             span.glyphicon.glyphicon-ok(aria-hidden='true')
                             |  Done
                         li
-                           a(onClick='goBack()')="Back"
+                          a(onClick='goBack()')="Back"
           div.collapse.navbar-collapse
     div(align='center')
       .container(ng-app='ng-app')
          div#form(align='center', class = 'panel')
-            form#sprint(method='post', action='/addsprint')
+            form#task(method='post', action='/addtask')
                div.col-md-12(align='center',class='jumbotron')
                   table.table-condensed.table-hover
                    tbody    
                      tr
                         td
-                           label Sprint name:
+                           label Task name:
                         td   
-                           input#projectname(type='text', ng-model='yourSprintName', name='sprintname')
+                           input#taskname(type='text', ng-model='yourTaskName', name='taskname')
                      tr
                         td
-                           label Sprint start date:
+                           label Task description
                         td      
-                           input#sprintstartdate(type='date', ng-model='yourSprintStartDate', name='sprintstartdate')
+                           textarea#taskdescription(type='text', rows="5", ng-model='yourTaskDescription', name='taskdescription')
                      tr
                         td
-                           label Sprint end date:
+                           label Points:
                         td   
-                           input#sprintenddate(type='date', ng-model='yourSprintEndDate', name='sprintenddate')
+                           select#taskpoints(type='number', ng-model='yourTaskPoints', name='taskpoints')
+                              option(value=1) 1
+                              option(value=2) 2
+                              option(value=3) 3
+                              option(value=5) 5
+                              option(value=8) 8
+                              option(value=13) 13
+                           input#sprintid(type='hidden', name='sprintid', value='#{sprintid}')
                            input#projectid(type='hidden', name='projectid', value='#{projectid}')
-
-
+   
       script(type='text/javascript').
          function goBack(){
             window.history.back();

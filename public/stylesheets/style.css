@@ -6,3 +6,10 @@ body {
 a {
   color: #00B7FF;
 }
+lefty{
+   position: absolute;
+   top: 0;
+   right: 0;
+   width: 100px;
+   text-align:left;"
+}

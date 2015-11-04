@@ -226,6 +226,7 @@ function profileFunction(req, res){
 
       collection.find({"username" : userName,"userstatus" : {$in : ["A","N"]},
       "userpassword" : userPassword },function(err, find){
+
             var collection2 = db.get('projectcollection');
             collection2.find({"projectid" : parseInt(projectid)}, { "projectname" : 1 }, function(err,doc){
                if(doc[0]==undefined || doc[0]==""){
@@ -236,12 +237,21 @@ function profileFunction(req, res){
 
                var collection3 = db.get('sprintInProjectCollection');
                collection3.find({"projectid" : parseInt(projectid)}, { "sprintname" : 1 }, function(err,sprints){
-
-                  res.render('project', {
-                     "project" : doc,
-                     "sprints" : sprints
+                  //  logger.debug(sprints);
+                  var list = [];
+                  for (i=0; i<sprints.length; i++) {
+                     list[list.length] = parseInt(sprints[i].sprintid);
+                  }
+                  logger.debug(list);
+                  var collection4 = db.get('taskInSprintCollection');
+                  collection4.find({"sprintid" : {$in: list}},{"projectid":parseInt(projectid)}, function(err,tasks){
+                     logger.debug('tasks ' + tasks[0]);
+                     res.render('project', {
+                        "project" : doc,
+                        "sprints" : sprints,
+                        "tasks": tasks
+                     });
                   });
-
                });
             });
       });
@@ -266,27 +276,78 @@ function profileFunction(req, res){
 
       var db = req.db;
       var collection = db.get('sprintInProjectCollection');
-      // Submit to the DB
-      collection.insert({
-         "projectid": projectid,
-         "sprintname" : sprintname,
-         "sprintstartdate" : sprintstartdate,
-         "sprintenddate" : sprintenddate
-      }, function (err, doc) {
-         if (err) {
-            // If it failed, return error
-            var ecom = "There was a problem during adding the information to the database.";
-            res.render('errorpage', { "error" : ecom, "page" : "/profile" });
-            return;
-         }
-         else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
-            res.location("/project?id="+projectid);
-            // And forward to success page
-            res.redirect("/project?id="+projectid);
-         }
+      collection.count({},function(err, count){
+         sprintid = count + 1;
+         // Submit to the DB
+         collection.insert({
+            "projectid": projectid,
+            "sprintid": sprintid,
+            "sprintname" : sprintname,
+            "sprintstartdate" : sprintstartdate,
+            "sprintenddate" : sprintenddate
+         }, function (err, doc) {
+            if (err) {
+               // If it failed, return error
+               var ecom = "There was a problem during adding the information to the database.";
+               res.render('errorpage', { "error" : ecom, "page" : "/profile" });
+               return;
+            }
+            else {
+               // If it worked, set the header so the address bar doesn't still say /adduser
+               res.location("/project?id="+projectid);
+               // And forward to success page
+               res.redirect("/project?id="+projectid);
+            }
+         });
       });
+   });
 
+   /* GET TaskCreator page. */
+   router.get('/taskcreator', function(req, res) {
+      res.render('taskcreator', {
+         title: 'Task Creator',
+         'sprintid': parseInt(req.query['id']),
+         'projectid': parseInt(req.query['pid'])
+      });
+   });
+
+   /* POST to Add Sprint */
+   router.post('/addtask', function(req, res) {
+
+      var username = req.session.user.username;
+      var sprintid = parseInt(req.body.sprintid);
+      var projectid = parseInt(req.body.projectid);
+      var taskname = req.body.taskname;
+      var taskdescription = req.body.taskdescription;
+      var taskpoints = req.body.taskpoints;
+
+      var db = req.db;
+      var collection = db.get('taskInSprintCollection');
+      collection.count({},function(err, count){
+         taskid = count + 1;
+         // Submit to the DB
+         collection.insert({
+            "projectid": projectid,
+            "sprintid": sprintid,
+            "taskid": taskid,
+            "taskname" : taskname,
+            "taskdescription" : taskdescription,
+            "taskpoints" : taskpoints
+         }, function (err, doc) {
+            if (err) {
+               // If it failed, return error
+               var ecom = "There was a problem during adding the information to the database.";
+               res.render('errorpage', { "error" : ecom, "page" : "/profile" });
+               return;
+            }
+            else {
+               // If it worked, set the header so the address bar doesn't still say /adduser
+               res.location("/project?id="+projectid);
+               // And forward to success page
+               res.redirect("/project?id="+projectid);
+            }
+         });
+      });
    });
 
    module.exports = router;
