@@ -228,8 +228,8 @@ function profileFunction(req, res){
       "userpassword" : userPassword },function(err, find){
 
             var collection2 = db.get('projectcollection');
-            collection2.find({"projectid" : parseInt(projectid)}, { "projectname" : 1 }, function(err,doc){
-               if(doc[0]==undefined || doc[0]==""){
+            collection2.find({"projectid" : parseInt(projectid)}, { "projectname" : 1 }, function(err,projects){
+               if(projects[0]==undefined || projects[0]==""){
                   var ecom = "Wrong number of project";
                   res.render('errorpage', { "error" : ecom, "page" : "/profile" });
                   return;
@@ -237,17 +237,11 @@ function profileFunction(req, res){
 
                var collection3 = db.get('sprintInProjectCollection');
                collection3.find({"projectid" : parseInt(projectid)}, { "sprintname" : 1 }, function(err,sprints){
-                  //  logger.debug(sprints);
-                  var list = [];
-                  for (i=0; i<sprints.length; i++) {
-                     list[list.length] = parseInt(sprints[i].sprintid);
-                  }
-                  logger.debug(list);
+
                   var collection4 = db.get('taskInSprintCollection');
-                  collection4.find({"sprintid" : {$in: list}},{"projectid":parseInt(projectid)}, function(err,tasks){
-                     logger.debug('tasks ' + tasks[0]);
+                  collection4.find({"projectid":parseInt(projectid)}, function(err,tasks){
                      res.render('project', {
-                        "project" : doc,
+                        "project" : projects,
                         "sprints" : sprints,
                         "tasks": tasks
                      });
@@ -348,6 +342,75 @@ function profileFunction(req, res){
             }
          });
       });
+   });
+
+   /* GET Taskedit page. */
+   // router.get('/taskeditor', function(req, res) {
+   //    res.render('taskeditor', {
+   //       title: 'Task Editor',
+   //       'projectid': parseInt(req.query['pid']),
+   //       'sprintid': parseInt(req.query['sid']),
+   //       'taskid': parseInt(req.query['tid'])
+   //    });
+   // });
+
+
+   /* GET teskeditor page. */
+   router.get('/taskeditor', function(req, res) {
+      var taskid = parseInt(req.query['tid']);
+      var sprintid = parseInt(req.query['sid']);
+      var projectid = parseInt(req.query['pid']);
+      var db = req.db;
+      var collection = db.get('taskInSprintCollection');
+      collection.find({"taskid":parseInt(taskid)},function(err,tasks){
+         res.render('taskeditor', {
+            title: 'Task Editor',
+            'tasks': tasks,
+            'projectid': parseInt(req.query['pid']),
+            'sprintid': parseInt(req.query['sid']),
+            'taskid': parseInt(req.query['tid'])
+         });
+      });
+   });
+
+
+   /* POST to Add Sprint */
+   router.post('/edittask', function(req, res) {
+
+      var username = req.session.user.username;
+      var taskid = parseInt(req.body.taskid);
+      var sprintid = parseInt(req.body.sprintid);
+      var projectid = parseInt(req.body.projectid);
+      var taskname = req.body.taskname;
+      var taskdescription = req.body.taskdescription;
+      var taskpoints = req.body.taskpoints;
+      var db = req.db;
+      var collection = db.get('taskInSprintCollection');
+      collection.update({"taskid" : taskid},
+         {$set: {"taskname" : taskname, "taskdescription": taskdescription, "taskpoints":taskpoints}
+      },function (err, taskupdate){
+            if (err) {
+               // If it failed, return error
+               var ecom = "There was a problem during adding the information to the database.";
+               res.render('errorpage', { "error" : ecom, "page" : "/profile" });
+               return;
+            }
+            else {
+               // If it worked, set the header so the address bar doesn't still say /adduser
+               res.location("/project?id="+projectid);
+               // And forward to success page
+               res.redirect("/project?id="+projectid);
+            }
+      });
+   });
+
+   router.post('/deletetask', function(req,res){
+      var taskid = parseInt(req.body.taskid);
+      var projectid = parseInt(req.body.projectid);
+      var db = req.db;
+      var collection = db.get('taskInSprintCollection');
+      collection.remove({"taskid" : parseInt(taskid)})
+      res.send("Task number "+taskid+" was deleted");
    });
 
    module.exports = router;

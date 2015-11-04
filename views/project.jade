@@ -1,7 +1,6 @@
 extends layout
 
 link(rel='stylesheet', href='/stylesheets/style.css')
-
 block content
    each individualProject in project
       div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
@@ -17,7 +16,7 @@ block content
          div.collapse.navbar-collapse
       
       div(align='center', ng-app='ng-app')
-            h2 #{individualProject.projectname}
+            h1 #{individualProject.projectname}
             div(align='left', class='sprints' id='sprints')
                each sprint in sprints
                   div.row(align='center', class='jumbotron')
@@ -50,12 +49,46 @@ block content
                            tr
                               td 
                               td
-                     each task in tasks
-                        h4 #{task.taskname}
+                     br
+                     .container
+                        table.table.table-hover(class="sortable")
+
+                          thead
+                            tr
+                              th Task name
+                              th Task description
+                              th Points
+                              th
+                              th
+                          tbody
+                           each task in tasks
+                             if (sprint.sprintid === task.sprintid)
+                               tr
+                                 td #{task.taskname}
+                                 td #{task.taskdescription}
+                                 td #{task.taskpoints}
+                                 td
+                                    a.btn.btn-warning.btn-sm(href='/taskeditor?pid='+individualProject.projectid+'&sid='+sprint.sprintid+'&tid='+task.taskid, role='button') 
+                                       span.glyphicon.glyphicon-pencil(aria-hidden='true')
+                                       |  Edit
+                                 td
+                                    a.btn.btn-danger.btn-sm(onclick='deleteTask(' + task.taskid + ',' + individualProject.projectid + ')')
+                                       span.glyphicon.glyphicon-remove(aria-hidden='true')
+                                    
                               
                   div.row.col-md-12
                      br 
                      br 
-                     br 
-                              
-         
+                     br
+                     
+   script(type='text/javascript').
+      function deleteTask(task, project){
+            if(confirm("Are you sure you want to delete task?")){
+                $.post('deletetask', { taskid: task, projectid: project },function(data) {
+                        alert(data);
+                });
+                location.reload();
+            }
+            else{
+            }
+        }
