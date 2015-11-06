@@ -12,6 +12,11 @@ html
 			| body { padding-top: 50px; }
 			| </style>
 			script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+			block scripts
+				script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
+				script(src='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+				script(src='http://mottie.github.io/tablesorter/js/jquery.tablesorter.js')
+				script(src='http://mottie.github.io/tablesorter/js/jquery.tablesorter.widgets.js')
 			body
 				include header
 				block content

@@ -1,6 +1,14 @@
 extends layout
 
 link(rel='stylesheet', href='/stylesheets/style.css')
+link(rel='stylesheet', href='http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css')
+link(rel='stylesheet', href='http://mottie.github.io/tablesorter/css/theme.bootstrap.css')
+
+script(type='text/javascript').
+   $(document).ready(function() {
+   $("table.table.tablesorter.table-bordered").tablesorter({});
+   });
+
 block content
    each individualProject in project
       div.navbar.navbar-inverse.navbar-fixed-top(role='navigation')
@@ -22,56 +30,63 @@ block content
                   div.row(align='center', class='jumbotron')
                      // Header table
                      table
+                        col(width=500)
+                        col(width=450)
+                        col(width=100)
+                        col(width=100)
                         thead
                            tr
-                              th.col-md-4(align='left') #{sprint.sprintname}  
-                              th.col-md-6
-                              th.col-md-1(align='right') Start date
-                              th.col-md-1(align='right') End date
+                              th 
+                                 a.btn.btn-info(href='/taskcreator?id='+sprint.sprintid+'&pid='+individualProject.projectid, role='button') 
+                                    span.glyphicon.glyphicon-plus(aria-hidden='true')
+                                    |  Add task
+                              th #{sprint.sprintname}
+                              th Start date
+                              th End date
                               
                         tbody
                            tr
-                              td 
+                              td
                               td
                               td #{sprint.sprintstartdate}
                               td #{sprint.sprintenddate}
                      // End of Header table
-                     table
-                        thead
-                           tr
-                              th.col-md-12
-                                 a.btn.btn-info(href='/taskcreator?id='+sprint.sprintid+'&pid='+individualProject.projectid, role='button') 
-                                    span.glyphicon.glyphicon-plus(aria-hidden='true')
-                                    |  Add task
-                              th.col-md-12
-                              
-                        tbody
-                           tr
-                              td 
-                              td
                      br
-                     .container
-                        table.table.table-hover(class="sortable")
+                     // Task table
+                     script(type='text/javascript').
+                        $(function() {
+                           $(" table.tablesorter ").tablesorter({
+                                 theme : 'bootstrap',
+                              widgets : [ 'uitheme' ]
+                           });
+                        });
+                        $("table.tablesorter thead th:eq(3), table.tablesorter thead th:eq(4)").data("sorter", false).data("filter", false);
 
+                     .container
+                        table.tablesorter
+                          col(width=150)
+                          col(width=500)
+                          col(width=25)
+                          col(width=25)
+                          col(width=25)
                           thead
                             tr
                               th Task name
                               th Task description
                               th Points
-                              th
-                              th
+                              th Edit
+                              th Delete
                           tbody
                            each task in tasks
                              if (sprint.sprintid === task.sprintid)
                                tr
                                  td #{task.taskname}
                                  td #{task.taskdescription}
-                                 td #{task.taskpoints}
-                                 td
+                                 td(align='center') #{task.taskpoints}
+                                 td(align='center')
                                     a.btn.btn-warning.btn-sm(href='/taskeditor?pid='+individualProject.projectid+'&sid='+sprint.sprintid+'&tid='+task.taskid, role='button') 
                                        span.glyphicon.glyphicon-pencil(aria-hidden='true')
-                                       |  Edit
-                                 td
+                                 td(align='center')
                                     a.btn.btn-danger.btn-sm(onclick='deleteTask(' + task.taskid + ',' + individualProject.projectid + ')')
                                        span.glyphicon.glyphicon-remove(aria-hidden='true')
                                     
@@ -80,7 +95,7 @@ block content
                      br 
                      br 
                      br
-                     
+                  
    script(type='text/javascript').
       function deleteTask(task, project){
             if(confirm("Are you sure you want to delete task?")){
