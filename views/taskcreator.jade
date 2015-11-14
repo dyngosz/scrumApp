@@ -45,7 +45,16 @@ block content
                               option(value=13) 13
                            input#sprintid(type='hidden', name='sprintid', value='#{sprintid}')
                            input#projectid(type='hidden', name='projectid', value='#{projectid}')
-   
+                     tr
+                        td
+                           label Status:
+                        td
+                           select#taskstatus(ng-model='yourTaskStatus', name='taskstatus')
+                              option(value="not") Not started
+                              option(value="progress") In progress
+                              option(value="review") Review
+                              option(value="done") Done
+
       script(type='text/javascript').
          function goBack(){
             window.history.back();

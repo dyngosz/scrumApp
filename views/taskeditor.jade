@@ -37,18 +37,28 @@ block content
                         tr
                            td
                               label Points:
-                           td   
+                           td 
                               select#taskpoints(type='number', ng-model='yourTaskPoints', name='taskpoints')
-                                 option(value=1) 1
-                                 option(value=2) 2
-                                 option(value=3) 3
-                                 option(value=5) 5
-                                 option(value=8) 8
-                                 option(value=13) 13
-                                 option(selected="selected ") #{task.taskpoints}
+                                    option(value=1) 1
+                                    option(value=2) 2
+                                    option(value=3) 3
+                                    option(value=5) 5
+                                    option(value=8) 8
+                                    option(value=13) 13
+                                    option(selected="selected ") #{task.taskpoints}
                               input#projectid(type='hidden', name='projectid', value='#{projectid}')
                               input#sprintid(type='hidden', name='sprintid', value='#{sprintid}')
                               input#taskid(type='hidden', name='taskid', value='#{taskid}')
+                        tr
+                           td
+                              label Status:
+                           td
+                              select#taskstatus(ng-model='yourTaskStatus', name='taskstatus')
+                                 option(value="not") Not started
+                                 option(value="progress") In progress
+                                 option(value="review") Review
+                                 option(value="done") Done
+                                 option(selected="selected") #{task.taskstatus}
       
       script(type='text/javascript').
          function goBack(){

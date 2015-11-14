@@ -69,6 +69,7 @@ block content
                           col(width=25)
                           col(width=25)
                           col(width=25)
+                          col(width=25)
                           thead
                             tr
                               th Task name
@@ -76,6 +77,7 @@ block content
                               th Points
                               th Edit
                               th Delete
+                              th Status 
                           tbody
                            each task in tasks
                              if (sprint.sprintid === task.sprintid)
@@ -89,6 +91,18 @@ block content
                                  td(align='center')
                                     a.btn.btn-danger.btn-sm(onclick='deleteTask(' + task.taskid + ',' + individualProject.projectid + ')')
                                        span.glyphicon.glyphicon-remove(aria-hidden='true')
+                                 if (task.taskstatus === 'not')
+                                    td(align="center")
+                                       span.label.label-default Not started
+                                 if (task.taskstatus === 'progress')
+                                    td(align="center")
+                                       span.label.label-info In progress  
+                                 if (task.taskstatus === 'review')
+                                    td(align="center")
+                                       span.label.label-warning Review        
+                                 if (task.taskstatus === 'done')
+                                    td(align="center")
+                                       span.label.label-success Done        
                                     
                               
                   div.row.col-md-12

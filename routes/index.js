@@ -314,6 +314,7 @@ function profileFunction(req, res){
       var taskname = req.body.taskname;
       var taskdescription = req.body.taskdescription;
       var taskpoints = req.body.taskpoints;
+      var taskstatus = req.body.taskstatus;
 
       var db = req.db;
       var collection = db.get('taskInSprintCollection');
@@ -326,7 +327,8 @@ function profileFunction(req, res){
             "taskid": taskid,
             "taskname" : taskname,
             "taskdescription" : taskdescription,
-            "taskpoints" : taskpoints
+            "taskpoints" : taskpoints,
+            "taskstatus" : taskstatus
          }, function (err, doc) {
             if (err) {
                // If it failed, return error
@@ -384,10 +386,11 @@ function profileFunction(req, res){
       var taskname = req.body.taskname;
       var taskdescription = req.body.taskdescription;
       var taskpoints = req.body.taskpoints;
+      var taskstatus = req.body.taskstatus;
       var db = req.db;
       var collection = db.get('taskInSprintCollection');
       collection.update({"taskid" : taskid},
-         {$set: {"taskname" : taskname, "taskdescription": taskdescription, "taskpoints":taskpoints}
+         {$set: {"taskname" : taskname, "taskdescription": taskdescription, "taskpoints":taskpoints, "taskstatus":taskstatus}
       },function (err, taskupdate){
             if (err) {
                // If it failed, return error
