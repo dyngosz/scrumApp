@@ -37,7 +37,7 @@ block content
                         thead
                            tr
                               th 
-                                 a.btn.btn-info(href='/taskcreator?id='+sprint.sprintid+'&pid='+individualProject.projectid, role='button') 
+                                 a.btn.btn-primary(href='/taskcreator?id='+sprint.sprintid+'&pid='+individualProject.projectid, role='button') 
                                     span.glyphicon.glyphicon-plus(aria-hidden='true')
                                     |  Add task
                               th #{sprint.sprintname}
@@ -93,18 +93,17 @@ block content
                                        span.glyphicon.glyphicon-remove(aria-hidden='true')
                                  if (task.taskstatus === 'not')
                                     td(align="center")
-                                       span.label.label-default Not started
+                                       span.label.label-dark Not started
                                  if (task.taskstatus === 'progress')
                                     td(align="center")
-                                       span.label.label-info In progress  
+                                       span.label.label-apple In progress  
                                  if (task.taskstatus === 'review')
                                     td(align="center")
-                                       span.label.label-warning Review        
+                                       span.label.label-violet Review        
                                  if (task.taskstatus === 'done')
                                     td(align="center")
-                                       span.label.label-success Done        
+                                       span.label.label-green Done        
                                     
-                              
                   div.row.col-md-12
                      br 
                      br 

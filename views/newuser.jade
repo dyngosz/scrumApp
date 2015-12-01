@@ -22,7 +22,7 @@ script(type='text/javascript').
   function validateName(val){
     reg = /^[a-zA-ZąćęłńóśżźĄĆĘŁŃÓŚŻŹ]{2,20}$/;
     if (!val.match(reg)){
-      document.getElementById("validname").innerHTML = "Enter the correct name";
+      document.getElementById("validname").innerHTML = "Enter the correct login";
       adduser.username.select();
     }
     else document.getElementById("validname").innerHTML = "";
