@@ -198,10 +198,8 @@ function profileFunction(req, res){
 
    });
 
-   /*Link to project*/
+   /*Get project and its sprints with tasks*/
    router.get('/project', function(req, res){
-
-
       var projectid = req.query['id'];
       if(projectid == undefined || projectid == ""){
          var ecom = "There is no project with this number";
@@ -211,9 +209,8 @@ function profileFunction(req, res){
       var db = req.db;
       // Get our form values. These rely on the "name" attributes
       if(!req.session.user){
-         // If it worked, set the header so the address bar doesn't still say /adduser
          res.location("/");
-         // And forward to success page
+         // And forward to project page
          res.redirect("/?project="+projectid);
          return;
       }
@@ -221,12 +218,12 @@ function profileFunction(req, res){
          var userName = req.session.user.username;
          var userPassword = req.session.user.userpassword;
       }
-      // Set our collection
+      // Main collection - project attached to user
       var collection = db.get('usercollection');
 
       collection.find({"username" : userName,"userstatus" : {$in : ["A","N"]},
       "userpassword" : userPassword },function(err, find){
-
+            // Find specified project
             var collection2 = db.get('projectcollection');
             collection2.find({"projectid" : parseInt(projectid)}, { "projectname" : 1 }, function(err,projects){
                if(projects[0]==undefined || projects[0]==""){
@@ -234,10 +231,10 @@ function profileFunction(req, res){
                   res.render('errorpage', { "error" : ecom, "page" : "/profile" });
                   return;
                }
-
+               // Get all the sprints in the project
                var collection3 = db.get('sprintInProjectCollection');
                collection3.find({"projectid" : parseInt(projectid)}, { "sprintname" : 1 }, function(err,sprints){
-
+                  // Get all the tasks for the sprint
                   var collection4 = db.get('taskInSprintCollection');
                   collection4.find({"projectid":parseInt(projectid)}, function(err,tasks){
                      res.render('project', {
@@ -305,7 +302,7 @@ function profileFunction(req, res){
       });
    });
 
-   /* POST to Add Sprint */
+   /* POST to Add Task */
    router.post('/addtask', function(req, res) {
 
       var username = req.session.user.username;
@@ -337,24 +334,13 @@ function profileFunction(req, res){
                return;
             }
             else {
-               // If it worked, set the header so the address bar doesn't still say /adduser
                res.location("/project?id="+projectid);
-               // And forward to success page
+               // Forward to project page
                res.redirect("/project?id="+projectid);
             }
          });
       });
    });
-
-   /* GET Taskedit page. */
-   // router.get('/taskeditor', function(req, res) {
-   //    res.render('taskeditor', {
-   //       title: 'Task Editor',
-   //       'projectid': parseInt(req.query['pid']),
-   //       'sprintid': parseInt(req.query['sid']),
-   //       'taskid': parseInt(req.query['tid'])
-   //    });
-   // });
 
 
    /* GET teskeditor page. */

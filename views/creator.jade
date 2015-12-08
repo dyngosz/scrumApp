@@ -18,6 +18,11 @@ block content
       .container(ng-app='ng-app')
          div#form(align='center', class = 'panel')
             form#project(method='post', action='/addproject')
-               div.col-md-12(align='center',)
-                  label Project name:
-                  input#projectname(type='text', ng-model='yourProjectName', name='projectname')
+               div.col-md-12(align='center',class='jumbotron')
+                  table.table-condensed.table-hover
+                   tbody    
+                     tr
+                        td
+                           label Project name:
+                        td   
+                           input#projectname(type='text', ng-model='yourProjectName', name='projectname')
