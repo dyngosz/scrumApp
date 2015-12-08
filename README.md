@@ -1,9 +1,5 @@
 # scrumApp
-Web app enabling managament of projects according to SCRUM
+Web app enabling managament of projects according to SCRUM using NodeJS, MongoDB, Jade and Bootstrap.
 
-ToDO:
-- [ ] taskEditor select bug
-- [x] tasks in sprint table sorting
-- [x] task table formatting
-- [ ] more sprint and task info
-- [ ] handling users
+![alt tag](http://i.imgur.com/IcZboDm.png)
+
